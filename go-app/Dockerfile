@@ -1,18 +1,23 @@
+# Use a imagem base oficial do Go
 FROM golang:latest
 
-WORKDIR /go/src/app
+# Defina o diretório de trabalho dentro do contêiner
+WORKDIR /app
 
-COPY go.mod .
-COPY go.sum .
+# Copie o arquivo go.mod e go.sum para o diretório de trabalho
+COPY go.mod go.sum ./
 
-ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.io
-#ENV GOPROXY=https://proxy.golang.org
+# Baixe as dependências do módulo Go
+RUN go mod download
 
-RUN go mod download -modcacherw
-
+# Copie todo o código fonte do aplicativo para o diretório de trabalho
 COPY . .
 
-RUN go build -o app
+# Compile o aplicativo Go
+RUN go build -o go-app
 
-CMD ["./app"]
+# Defina a porta que o aplicativo irá expor
+EXPOSE 8080
+
+# Execute o aplicativo quando o contêiner for iniciado
+CMD ["./go-app"]
