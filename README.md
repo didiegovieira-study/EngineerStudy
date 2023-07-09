@@ -2,6 +2,7 @@
 
 Este projeto é um ambiente de desenvolvimento para estudo de engenharia de software, utilizando Docker, MongoDB, MYSQL, PHP e Go. Ele permite a execução de uma aplicação PHP e uma aplicação Go de forma isolada e simplificada, facilitando o desenvolvimento e teste de funcionalidades.
 
+![Imagem do Projeto](https://i.pinimg.com/originals/76/09/46/7609468e97e15d1da8d14d534be7366c.gif)
 ## Pré-requisitos
 
 Certifique-se de ter o Docker e o Docker Compose instalados na sua máquina antes de prosseguir.
@@ -13,11 +14,11 @@ Certifique-se de ter o Docker e o Docker Compose instalados na sua máquina ante
 
 1. Clone este repositório para a sua máquina local.
 2. Navegue até o diretório do projeto: `cd EngineerStudy`.
-  2.1 Navegue até o diretório do ambiente Go: `cd go-app`.
-  2.2 Execute o comando `go mod vendor`
-  2.3 Execute o comando `go mod download`
-  2.4 Execute o comando `go mod verify`
-  2.5 Execute o comando `cd ..`
+  - Navegue até o diretório do ambiente Go: `cd go-app`.
+  - Execute o comando `go mod vendor`
+  - Execute o comando `go mod download`
+  - Execute o comando `go mod verify`
+  - Execute o comando `cd ..`
 3. Execute o comando `docker-compose build` para construir as imagens dos serviços PHP e Go.
 4. Execute o comando `docker-compose up -d` para iniciar os containers em segundo plano.
 5. Acesse a aplicação PHP no navegador através do endereço `http://localhost`.
@@ -27,32 +28,15 @@ Certifique-se de ter o Docker e o Docker Compose instalados na sua máquina ante
 
 O projeto possui a seguinte estrutura de diretórios:
 
-├── docker-compose.yml
-├── go-app
-│   ├── controllers
-│   ├── Dockerfile
-│   ├── go.mod
-│   ├── go.sum
-│   ├── main.go
-│   ├── models
-│   └── vendor
-└── php-app
-    ├── app
-    ├── composer.json
-    ├── Dockerfile
-    ├── public
-    ├── routes
-    ├── vite.config.js
-    ├── artisan
-    ├── config
-    ├── package.json
-    ├── README.md
-    ├── storage
-    ├── bootstrap
-    ├── database
-    ├── phpunit.xml
-    ├── resources
-    └── tests
+- docker-compose.yml
+- go-app/
+  - Dockerfile
+  - go.mod
+  - go.sum
+  - ... (outros arquivos do Go)
+- php-app/
+  - Dockerfile
+  - ... (arquivos do PHP)
 
 ## Recursos Adicionais
 
@@ -71,3 +55,4 @@ O projeto possui a seguinte estrutura de diretórios:
 - Lembre-se de encerrar o ambiente Docker quando não estiver em uso, utilizando o comando `docker-compose down`, para liberar recursos do sistema.
 
 Divirta-se estudando engenharia de software com este ambiente de desenvolvimento prático e flexível!
+
