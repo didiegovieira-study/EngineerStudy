@@ -1,48 +1,61 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"golang/models"
+	"goapp/models"
+	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type UserController struct {
-	session *mgo.Session
+	session *mongo.Client
 }
 
-func NewUserController(s *mgo.Session) *UserController {
+func NewUserController(s *mongo.Client) *UserController {
 	return &UserController{s}
 }
 
 func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	id := p.ByName("id")
 
-	if !bson.IsObjectIdHex(id) {
-		w.WriteHeader(http.StatusNotFound)
-	}
+	oid, err := primitive.ObjectIDFromHex(id)
 
-	oid := bson.ObjectIdHex(id)
-
-	u := models.User{}
-
-	if err := uc.session.DB("mongo-golang").C("users").FindId(oid).One(&u); err != nil {
+	if err != nil {
+		fmt.Println(err)
 		w.WriteHeader(404)
 		return
 	}
 
-	uj, err := json.Marshal(u)
+	u := models.User{}
+
+	collection := uc.session.Database("mongo-golang").Collection("users")
+	result := collection.FindOne(context.Background(), bson.M{"_id": oid})
+	if result.Err() != nil {
+		log.Println(result.Err().Error())
+		w.WriteHeader(404)
+		return
+	}
+
+	err = result.Decode(&u)
+
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(404)
+		return
 	}
+
+	ul, err := json.Marshal(u)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "%s\n", uj)
+	fmt.Fprintf(w, "%s\n", string(ul))
 }
 
 func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -50,9 +63,10 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ ht
 
 	json.NewDecoder(r.Body).Decode(&u)
 
-	u.Id = bson.NewObjectId()
+	u.Id = primitive.NewObjectID()
 
-	uc.session.DB("mongo-golang").C("users").Insert(u)
+	collection := uc.session.Database("mongo-golang").Collection("users")
+	collection.InsertOne(context.TODO(), u)
 
 	uj, err := json.Marshal(u)
 
@@ -73,10 +87,18 @@ func (uc UserController) DeleteUser(w http.ResponseWriter, r *http.Request, p ht
 		return
 	}
 
-	oid := bson.ObjectIdHex(id)
+	oid, err := primitive.ObjectIDFromHex(id)
 
-	err := uc.session.DB("mongo-golang").C("users").RemoveId(oid)
 	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(404)
+		return
+	}
+
+	collection := uc.session.Database("mongo-golang").Collection("users")
+	result := collection.FindOneAndDelete(context.Background(), bson.M{"_id": oid})
+	if result.Err() != nil {
+		log.Println(result.Err().Error())
 		w.WriteHeader(404)
 		return
 	}

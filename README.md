@@ -21,8 +21,8 @@ Certifique-se de ter o Docker e o Docker Compose instalados na sua máquina ante
   - Execute o comando `cd ..`
 3. Execute o comando `docker-compose build` para construir as imagens dos serviços PHP e Go.
 4. Execute o comando `docker-compose up -d` para iniciar os containers em segundo plano.
-5. Acesse a aplicação PHP no navegador através do endereço `http://localhost`.
-6. Acesse a aplicação Go no navegador através do endereço `http://localhost:8080`.
+5. Acesse a aplicação PHP no navegador através do endereço `http://localhost:8080`.
+6. Acesse a aplicação Go no navegador através do endereço `http://localhost`.
 
 ## Estrutura do Projeto
 

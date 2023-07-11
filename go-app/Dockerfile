@@ -13,13 +13,14 @@ COPY go.mod go.sum ./
 # Copie todo o código fonte do aplicativo para o diretório de trabalho
 COPY . .
 
-COPY vendor/ ./vendor/
+#COPY vendor/ ./vendor/
 
 # Compile o aplicativo Go
-RUN go build -mod vendor -o go-app
+#RUN go build -mod vendor -o go-app
+RUN go mod tidy && go build -o go-app
 
 # Defina a porta que o aplicativo irá expor
-EXPOSE 8080
+EXPOSE 9000
 
 # Execute o aplicativo quando o contêiner for iniciado
 CMD ["./go-app"]

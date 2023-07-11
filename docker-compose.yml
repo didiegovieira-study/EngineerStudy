@@ -1,19 +1,22 @@
 version: '3.8'
+  
 services:
   mongodb:
-    image: mongo
+    container_name: mongodb
+    image: mongo:6-jammy
     ports:
-      - 27017:27017
-    command: mongod --replSet rs0
+      - '27017:27017'
+    volumes:
+      - ./mongodb-data:/data/db
     networks:
       - my-network
-    container_name: mongodb
     # Container para o MongoDB
 
   mysql:
+    container_name: mysql
     image: mysql:latest
     ports:
-      - 33061:33061
+      - 33061:3306
     environment:
       MYSQL_ROOT_PASSWORD: password
     volumes:
@@ -21,24 +24,24 @@ services:
     command: bash -c "docker-entrypoint.sh --default-authentication-plugin=mysql_native_password && sleep 5 && mysql -u root -ppassword -e 'CREATE DATABASE IF NOT EXISTS database;'"
     networks:
       - my-network
-    container_name: mysql
     # Container para o MySQL
 
   php-app:
+    container_name: php-app
     build:
       context: ./php-app
     ports:
-      - 80:80
+      - 8080:8080
     networks:
       - my-network
-    container_name: php-app
     # Container para o aplicativo PHP
 
   go-app:
+    container_name: go-app
     build:
       context: ./go-app
     ports:
-      - 8080:8080
+      - 80:9000
     depends_on:
       - mongodb
       - mysql
@@ -46,8 +49,28 @@ services:
       - ./go-app:/go/src/app
     networks:
       - my-network
-    container_name: go-app
     # Container para o aplicativo Go
+
+  # zookeeper:
+  #   container_name: zookeeper
+  #   image: confluentinc/cp-zookeeper:latest
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+  #   ports:
+  #     - 22181:2181
+
+  # kafka:
+  #   container_name: kafka
+  #   image: 'bitnami/kafka:latest'
+  #   depends_on:
+  #     - zookeeper
+  #   networks:
+  #     - my-network
+  #   environment:
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #   ports:
+  #     - 29092:29092
 
 networks:
   my-network:
