@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
 	go.mongodb.org/mongo-driver v1.12.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

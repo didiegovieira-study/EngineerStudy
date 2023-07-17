@@ -4,16 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/didiegovieira/EngineerStudy/go-app/application/repositories"
-	"github.com/didiegovieira/EngineerStudy/go-app/application/repositories/mongodb"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
-
-func NewMongoDBRepository() repositories.UserRepository {
-	return &mongodb.UserMongoDBRepository{}
-}
 
 type MongodbDatabase struct {
 	Client *mongo.Client

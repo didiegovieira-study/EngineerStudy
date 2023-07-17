@@ -63,7 +63,7 @@ func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request, p h
 
 	err := uc.userService.DeleteUserByID(id)
 	if err != nil {
-		http.Error(w, id, err.ID)
+		http.Error(w, id, r.ProtoMajor)
 		return
 	}
 

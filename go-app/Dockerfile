@@ -17,7 +17,7 @@ COPY . .
 
 # Compile o aplicativo Go
 #RUN go build -mod vendor -o go-app
-RUN go mod tidy && go build -o go-app
+RUN go mod tidy && go build -o go-app ./framework/cmd/server
 
 # Defina a porta que o aplicativo irá expor
 EXPOSE 9000

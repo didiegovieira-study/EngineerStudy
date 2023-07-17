@@ -1,20 +1,44 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
+	"os"
+
+	"github.com/didiegovieira/EngineerStudy/go-app/application/repositories"
+	"github.com/didiegovieira/EngineerStudy/go-app/application/repositories/mongodb"
+	"github.com/didiegovieira/EngineerStudy/go-app/application/repositories/mysql"
 	"github.com/didiegovieira/EngineerStudy/go-app/application/service"
 	"github.com/didiegovieira/EngineerStudy/go-app/framework/controllers"
-	"github.com/didiegovieira/EngineerStudy/go-app/framework/database"
+	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
-func main() {
-	// Exemplo de configuração do MySQL:
-	//userRepository := database.NewMySQLRepository()
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file loaded")
+	}
 
-	// Exemplo de configuração do MongoDB:
-	userRepository := database.NewMongoDBRepository()
+}
+
+func main() {
+
+	dbType := os.Getenv("DB_TYPE")
+	var userRepository repositories.UserRepository
+	switch dbType {
+	case "mysql":
+		// Configuração do MySQL:
+		userRepository = mysql.NewMySQLRepository()
+
+	case "mongodb":
+		// Configuração do MongoDB:
+		userRepository = mongodb.NewMongoDBRepository()
+
+	default:
+		return
+	}
 
 	userService := service.NewUserService(userRepository)
 	userController := controllers.NewUserController(*userService)

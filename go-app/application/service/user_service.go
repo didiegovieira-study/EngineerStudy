@@ -21,6 +21,6 @@ func (s *UserService) CreateUser(user *entities.User) error {
 	return s.userRepository.CreateUser(&entities.User{})
 }
 
-func (s *UserService) DeleteUserByID(id string) *entities.User {
+func (s *UserService) DeleteUserByID(id string) error {
 	return s.userRepository.DeleteUserByID(id)
 }

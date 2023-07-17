@@ -5,20 +5,34 @@ import (
 	"fmt"
 
 	"github.com/didiegovieira/EngineerStudy/go-app/domain/entities"
-	"github.com/didiegovieira/EngineerStudy/go-app/domain/entities/mysql"
+	"github.com/didiegovieira/EngineerStudy/go-app/framework/database"
 )
+
+func NewMySQLRepository() *UserMySQLRepository {
+	db := database.NewMysqlDb()
+	return (*UserMySQLRepository)(db)
+}
 
 type UserMySQLRepository struct {
 	Db *sql.DB
 }
 
-func (repository UserMySQLRepository) CreateUser(user mysql.User) error {
+func (repository UserMySQLRepository) CreateUser(user *entities.User) error {
+	var nextID int
+	query := "SELECT MAX(id) FROM users"
+	err := repository.Db.QueryRow(query).Scan(&nextID)
+	if err != nil {
+		return err
+	}
+	nextID++
+
 	u := user
-	query := "INSERT INTO users (id, username, email) VALUES (?, ?, ?)"
-	_, err := repository.Db.Exec(query, u.ID, u.Username, u.Email)
+	query = "INSERT INTO users (id, name, gender, age) VALUES (?, ?, ?, ?)"
+	_, err = repository.Db.Exec(query, nextID, u.Name, u.Gender, u.Age)
 	if err != nil {
 		return fmt.Errorf("failed to insert user: %v", err)
 	}
+
 	return nil
 }
 
@@ -31,14 +45,15 @@ func (repository UserMySQLRepository) DeleteUserByID(id string) error {
 	return nil
 }
 
-func (repository UserMySQLRepository) GetByID(id string) (mysql.User, error) {
-	query := "SELECT id, username, email FROM users WHERE id = ?"
+func (repository UserMySQLRepository) GetUserByID(id string) (*entities.User, error) {
+	query := "SELECT * FROM users WHERE id = ?"
 	row := repository.Db.QueryRow(query, id)
 
-	user := &entities.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email)
+	user := &entities.User{} // Inicialize a struct entities.User
+
+	err := row.Scan(&user.Id, &user.Name, &user.Gender, &user.Age)
 	if err != nil {
-		return nil, fmt.Errorf("user not found")
+		return nil, err
 	}
 
 	return user, nil

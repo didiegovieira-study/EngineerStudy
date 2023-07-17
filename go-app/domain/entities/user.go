@@ -1,8 +1,8 @@
 package entities
 
 type User struct {
-	ID       int
-	Username string
-	Email    string
-	// outros campos comuns para ambos os bancos de dados
+	Id     string `json:"id" valid:"notnull" bson:"_id"`
+	Name   string `json:"name" bson:"name"`
+	Gender string `json:"gender" bson:"gender"`
+	Age    int    `json:"age" bson:"age"`
 }
