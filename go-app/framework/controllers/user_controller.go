@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/didiegovieira/EngineerStudy/go-app/application/service"
 	"github.com/didiegovieira/EngineerStudy/go-app/domain/entities"
+	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -40,6 +42,13 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ h
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
+
+	ooid := uuid.New().String()
+	u.Id = ooid
+
+	fmt.Println(ooid)
+	fmt.Println(u.Id)
+	fmt.Println(u)
 
 	err = uc.userService.CreateUser(u)
 	if err != nil {

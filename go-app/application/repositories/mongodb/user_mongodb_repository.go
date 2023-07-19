@@ -25,8 +25,7 @@ func (repository UserMongoDBRepository) getCollection() *mongo.Collection {
 }
 
 func (repository UserMongoDBRepository) CreateUser(user *entities.User) error {
-	u := user
-	_, err := repository.getCollection().InsertOne(context.Background(), u)
+	_, err := repository.getCollection().InsertOne(context.Background(), user)
 	if err != nil {
 		return fmt.Errorf("failed to insert user: %v", err)
 	}

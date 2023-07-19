@@ -18,7 +18,7 @@ func (s *UserService) GetUserByID(id string) (*entities.User, error) {
 }
 
 func (s *UserService) CreateUser(user *entities.User) error {
-	return s.userRepository.CreateUser(&entities.User{})
+	return s.userRepository.CreateUser(user)
 }
 
 func (s *UserService) DeleteUserByID(id string) error {

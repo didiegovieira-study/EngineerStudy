@@ -18,7 +18,10 @@ services:
     ports:
       - 33061:3306
     environment:
+      MYSQL_DATABASE: engineer_study
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: localhost
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
@@ -41,6 +44,13 @@ services:
       context: ./go-app
     ports:
       - 80:9000
+    environment:
+      DB_TYPE: mysql
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: engineer_study
     depends_on:
       - mongodb
       - mysql
@@ -73,4 +83,4 @@ services:
 
 networks:
   my-network:
-    # Rede personalizada para conectar os contêineres
+    driver: bridge

@@ -18,17 +18,9 @@ type UserMySQLRepository struct {
 }
 
 func (repository UserMySQLRepository) CreateUser(user *entities.User) error {
-	var nextID int
-	query := "SELECT MAX(id) FROM users"
-	err := repository.Db.QueryRow(query).Scan(&nextID)
-	if err != nil {
-		return err
-	}
-	nextID++
-
 	u := user
-	query = "INSERT INTO users (id, name, gender, age) VALUES (?, ?, ?, ?)"
-	_, err = repository.Db.Exec(query, nextID, u.Name, u.Gender, u.Age)
+	query := "INSERT INTO users (id, name, gender, age) VALUES (?, ?, ?, ?)"
+	_, err := repository.Db.Exec(query, u.Id, u.Name, u.Gender, u.Age)
 	if err != nil {
 		return fmt.Errorf("failed to insert user: %v", err)
 	}
@@ -49,7 +41,7 @@ func (repository UserMySQLRepository) GetUserByID(id string) (*entities.User, er
 	query := "SELECT * FROM users WHERE id = ?"
 	row := repository.Db.QueryRow(query, id)
 
-	user := &entities.User{} // Inicialize a struct entities.User
+	user := &entities.User{}
 
 	err := row.Scan(&user.Id, &user.Name, &user.Gender, &user.Age)
 	if err != nil {
